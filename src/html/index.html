@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Jira Client</title>
+</head>
+<body>
+    <h1>Please enter your JIRA domain</h1>
+    <form id="creds">
+        <h3 class="jira domain">Jira Domain</h3>
+        <input type="text", id="jiradomain" placeholder="https://test.atlassian.net/">
+    </form>
+</body>
+
+<script>
+    const {ipcRenderer} = require('electron')
+
+    // Always check if we have an domain already saved
+    var retrievedCreds = localStorage.getItem('creds');
+    retrievedCreds = JSON.parse(retrievedCreds)
+
+    if (retrievedCreds !== null) {
+        // send jiraDomain to main.js 
+        ipcRenderer.send('creds', retrievedCreds['domain'] )
+    }
+
+    document.querySelector('#creds').addEventListener('submit', function() {
+        // Grab our jira domain from the 
+        const jiraDomain = document.getElementById('jiradomain').value;
+
+        // send jiraDomain to main.js 
+        ipcRenderer.send('creds', jiraDomain )
+    });
+</script>
+</html>

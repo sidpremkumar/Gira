@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Jira Client</title>
+  </head>
+  <body>
+    <h1>Bookmarks</h1>
+    <div id="bookmarks">
+      <!-- This is where we will populate any bookmark links -->
+    </div>
+    <br/>
+    <button onclick="onHome()">Home</button>
+    <button onclick="onExit()">Exit</button>
+  </body>
+
+  <script>
+    const { ipcRenderer } = require('electron')
+
+    function onExit() {
+      // Send our exit message
+      ipcRenderer.send('sidebar-exit', '' )
+    }
+
+    function onHome() {
+      // Send our onHome message
+      ipcRenderer.send('sidebar-home', '' )
+    }
+
+    // Function to update the sidebar bookmarks
+    ipcRenderer.on('sidebar-bookmarks', (event, arg) => {
+
+      // Get our bookmark div
+      let bookmarkDiv = document.getElementById("bookmarks")
+
+      // Clear any child elements before pushing
+      bookmarkDiv.innerHTML = ''
+
+      arg['bookmarks'].forEach(element => {
+        // First create a button to go to the bookmark
+        let gotoButton = document.createElement("button");
+
+        gotoButton.onclick = function (event) {
+          ipcRenderer.send('sidebar-linkclick', element)
+        }
+        
+        // Add the name to the button
+        gotoButton.innerHTML = element['name'];
+
+        // Append it to the bookmarks div
+        bookmarkDiv.appendChild(gotoButton)
+
+        // Next create a button to delete the bookmark
+        let deleteButton = document.createElement("button")
+
+        deleteButton.onclick = function (event) {
+          ipcRenderer.send('sidebar-bookmarkdelete', element)
+        }
+
+        // Add some content and add it to the div
+        deleteButton.innerHTML = 'X'
+        bookmarkDiv.appendChild(deleteButton)
+      });
+      console.log(arg)
+    })
+  </script>
+</html>

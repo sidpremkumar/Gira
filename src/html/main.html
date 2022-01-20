@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>electron-tabs-demo</title>
+  <link rel="stylesheet" href="./main.css">
+</head>
+<body style="margin:0">
+
+<div class="etabs-tabgroup">
+  <div class="etabs-tabs"></div>
+  <div class="etabs-buttons"></div>
+</div>
+<div class="etabs-views"></div>
+
+
+<script>
+  const { ipcRenderer } = require('electron')
+  const TabGroup = require('electron-tabs')
+
+  let tabGroup = undefined;
+  let domain = undefined;
+
+  ipcRenderer.on('tabgroup-init', (event, arg) => {
+    domain = arg['domain']
+    tabGroup = new TabGroup({
+      newTab: {
+        title: arg['title'],
+        src: arg['domain'],
+        ready: readyFunction,
+      }
+    });
+  })
+
+  // Function to open a new tab for us
+  ipcRenderer.on('tabgroup-tab', (event, arg) => {
+    if (tabGroup !== undefined) {
+        var newTab = tabGroup.addTab({
+          title: arg['title'],
+          src: arg['domain'],
+          ready: readyFunction
+        });
+    } else {
+      console.log("tabgroup is still undefined")
+    }
+  })
+
+  // Function to move back the current tab
+  ipcRenderer.on('tabgroup-back', (event, arg) => {
+    if (tabGroup !== undefined) {
+      var activateTab = tabGroup.getActiveTab() 
+      activateTab.webview.goBack()
+    } else {
+      console.log("tabgroup is still undefined")
+    }
+  })
+
+  // Function to move forward the current tab
+  ipcRenderer.on('tabgroup-forward', (event, arg) => {
+    if (tabGroup !== undefined) {
+      var activateTab = tabGroup.getActiveTab() 
+      activateTab.webview.goForward()
+    } else {
+      console.log("tabgroup is still undefined")
+    }
+  })
+
+  function readyFunction(tab) {
+    // Function to be called when the tab is ready
+
+    // Add a tracker to keep updating the tab name
+    tab.webview.addEventListener('page-title-updated', event => {
+      // Update the title of the tab
+      tab.setTitle(event['title'])
+    })
+  }
+
+  ipcRenderer.on('tabgroup-switch', (event, arg) => {
+    var activateTab = tabGroup.getActiveTab()
+    if (activateTab != null) {
+      let webview = activateTab.webview;
+      webview.loadURL(arg['domain']);
+      activateTab.setTitle(arg['title'])
+    }
+  })
+
+
+</script>
+</body>
+</html>

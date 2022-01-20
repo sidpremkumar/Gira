@@ -102,3 +102,9 @@ dist
 
 # TernJS port file
 .tern-port
+
+# Our database file
+*jira_client_database
+
+# Anything built
+out/*
