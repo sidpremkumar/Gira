@@ -66,7 +66,7 @@ async function createIndex () {
         await setMainView(existingUser)
 
         // Also update the sidebar
-        await updateBookmarks(existingUser)
+        await updateSidebar(existingUser)
 
     } else {
         // and load the index.html of the app.
@@ -84,10 +84,7 @@ ipcMain.on('creds', async (event, domainName) => {
     var existingUser = await database.GetUser(domainName)
     if (existingUser === null) {
         // Create a new user object
-        existingUser = {
-            'domain': domainName, 
-            'bookmarks': []
-        }
+        existingUser = utils.getEmptyUser(domainName)
         database.AddUserData(existingUser)
     }
    
@@ -144,6 +141,17 @@ ipcMain.on('sidebar-bookmarkdelete', async (event, arg) => {
     // Now update the bookmarks sidebar
     sideBarView.webContents.send('sidebar-bookmarks', userInfo)
 });
+ipcMain.on('sidebar-ticketsdelete', async (event, arg) => {
+    // Get the users info
+    var userInfo = await database.GetUser(jiraDomain);
+    userInfo['tickets'] = userInfo['tickets'].filter(item => {
+        return JSON.stringify(item) !== JSON.stringify(arg)
+    })
+    database.UpdateUser(userInfo)
+
+    // Now update the bookmarks sidebar
+    sideBarView.webContents.send('sidebar-tickets', userInfo)
+});
 
 //call the creation function when app is done loading
 app.whenReady().then(createIndex)
@@ -176,9 +184,31 @@ async function saveToBookmarks(nameToSave, urlToSave) {
     sideBarView.webContents.send('sidebar-bookmarks', existingData)
 }
 
-async function updateBookmarks(userInfo) {
+async function saveToTickets(nameToSave, urlToSave) {
+    // First save this in our db
+    var existingData = await database.GetUser(jiraDomain)
+
+    // Ensure this url does not already exist
+    if (existingData['tickets'].includes(urlToSave)) {
+        console.log('ticket already exists')
+        return
+    }
+
+    // Else add and update the record
+    existingData['tickets'].push({
+        'url': urlToSave,
+        'name': nameToSave
+    })
+    database.UpdateUser(existingData)
+    
+    // Then let our sidebar know about the updated state
+    sideBarView.webContents.send('sidebar-tickets', existingData)
+}
+
+async function updateSidebar(userInfo) {
     // Let our sidebar know of the state
     sideBarView.webContents.send('sidebar-bookmarks', userInfo)
+    sideBarView.webContents.send('sidebar-tickets', userInfo)
 }
 
 async function setMainView(userInfo) {
@@ -312,6 +342,13 @@ async function setMainView(userInfo) {
                         click: () =>
                         {
                             saveToBookmarks(params['linkText'], params['linkURL'])
+                        }
+                    },
+                    {
+                        label: 'Save to tickets',
+                        click: () =>
+                        {
+                            saveToTickets(params['linkText'], params['linkURL'])
                         }
                     },
                     {

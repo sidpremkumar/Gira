@@ -10,5 +10,13 @@ function getRealScreen() {
     return [realWidth, realHeight]
 }
 
+function getEmptyUser(domainName) {
+    return {
+        'domain': domainName, 
+        'bookmarks': [],
+        'tickets': []
+    }
+}
 
-module.exports = { getRealScreen }
+
+module.exports = { getRealScreen, getEmptyUser }
