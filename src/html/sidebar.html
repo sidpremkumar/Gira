@@ -40,67 +40,83 @@
       // Clear any child elements before pushing
       bookmarkDiv.innerHTML = ''
 
-      arg['bookmarks'].forEach(element => {
-        // First create a button to go to the bookmark
-        let gotoButton = document.createElement("button");
+      bookmarks = arg['bookmarks']
 
-        gotoButton.onclick = function (event) {
-          ipcRenderer.send('sidebar-linkclick', element)
-        }
-        
-        // Add the name to the button
-        gotoButton.innerHTML = element['name'];
+      if(bookmarks.length == 0 ) {
+        let paragraph = document.createElement("p")
+        paragraph.innerHTML = 'No bookmarks'
+        bookmarkDiv.appendChild(paragraph)
+      } else {
+        bookmarks.forEach(element => {
+          // First create a button to go to the bookmark
+          let gotoButton = document.createElement("button");
 
-        // Append it to the bookmarks div
-        bookmarkDiv.appendChild(gotoButton)
+          gotoButton.onclick = function (event) {
+            ipcRenderer.send('sidebar-linkclick', element)
+          }
+          
+          // Add the name to the button
+          gotoButton.innerHTML = element['name'];
 
-        // Next create a button to delete the bookmark
-        let deleteButton = document.createElement("button")
+          // Append it to the bookmarks div
+          bookmarkDiv.appendChild(gotoButton)
 
-        deleteButton.onclick = function (event) {
-          ipcRenderer.send('sidebar-bookmarkdelete', element)
-        }
+          // Next create a button to delete the bookmark
+          let deleteButton = document.createElement("button")
 
-        // Add some content and add it to the div
-        deleteButton.innerHTML = 'X'
-        bookmarkDiv.appendChild(deleteButton)
-      });
+          deleteButton.onclick = function (event) {
+            ipcRenderer.send('sidebar-bookmarkdelete', element)
+          }
+
+          // Add some content and add it to the div
+          deleteButton.innerHTML = 'X'
+          bookmarkDiv.appendChild(deleteButton)
+        });
+      }
     })
 
 
     // Function to update the sidebar tickets
     ipcRenderer.on('sidebar-tickets', (event, arg) => {
       // Get our bookmark div
-      let bookmarkDiv = document.getElementById("tickets")
+      let ticketsDiv = document.getElementById("tickets")
 
       // Clear any child elements before pushing
-      bookmarkDiv.innerHTML = ''
+      ticketsDiv.innerHTML = ''
 
-      arg['tickets'].forEach(element => {
-        // First create a button to go to the bookmark
-        let gotoButton = document.createElement("button");
+      tickets = arg['tickets']
 
-        gotoButton.onclick = function (event) {
-          ipcRenderer.send('sidebar-linkclick', element)
-        }
-        
-        // Add the name to the button
-        gotoButton.innerHTML = element['name'];
+      if(tickets.length == 0 ) {
+        let paragraph = document.createElement("p")
+        paragraph.innerHTML = 'No tickets'
+        ticketsDiv.appendChild(paragraph)
+      } else {
+        tickets.forEach(element => {
+          // First create a button to go to the bookmark
+          let gotoButton = document.createElement("button");
 
-        // Append it to the bookmarks div
-        bookmarkDiv.appendChild(gotoButton)
+          gotoButton.onclick = function (event) {
+            ipcRenderer.send('sidebar-linkclick', element)
+          }
+          
+          // Add the name to the button
+          gotoButton.innerHTML = element['name'];
 
-        // Next create a button to delete the bookmark
-        let deleteButton = document.createElement("button")
+          // Append it to the bookmarks div
+          ticketsDiv.appendChild(gotoButton)
 
-        deleteButton.onclick = function (event) {
-          ipcRenderer.send('sidebar-ticketsdelete', element)
-        }
+          // Next create a button to delete the bookmark
+          let deleteButton = document.createElement("button")
 
-        // Add some content and add it to the div
-        deleteButton.innerHTML = 'X'
-        bookmarkDiv.appendChild(deleteButton)
-      });
+          deleteButton.onclick = function (event) {
+            ipcRenderer.send('sidebar-ticketsdelete', element)
+          }
+
+          // Add some content and add it to the div
+          deleteButton.innerHTML = 'X'
+          ticketsDiv.appendChild(deleteButton)
+        });
+      }
     })
   </script>
 </html>

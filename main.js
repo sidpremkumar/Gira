@@ -81,6 +81,15 @@ async function createIndex () {
 
 // receive message from index.html 
 ipcMain.on('creds', async (event, domainName) => {
+    // First format the domain name
+    domainName = utils.formatDomainName(domainName)
+
+    if (domainName == null) {
+        // TODO: Popup
+        console.log('Could not validate domain name');
+        return;
+    }
+
     // Save this data to our database only if the user does not exists
     var existingUser = await database.GetUser(domainName)
     if (existingUser === null) {
