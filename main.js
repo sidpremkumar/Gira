@@ -6,6 +6,7 @@ const url = require('url')
 const { app, BrowserWindow, BrowserView } = require('electron')
 const { ipcMain, remote } = require('electron')
 const electron = require('electron');
+const electronReload = require('electron-reload');
 const contextMenu = require('electron-context-menu');
 const shell = require('electron').shell;
 var Datastore = require('nedb')

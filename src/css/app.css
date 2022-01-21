@@ -1,0 +1,26 @@
+/* Universal app stylesheet */
+
+
+/* ---------- */
+/* Typography */
+/* ---------- */
+
+h1 {
+    font-family: Charlie Display, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Noto Sans, Ubuntu, Droid Sans, Helvetica Neue, sans-serif;
+    color: #2E415F;
+    font-weight: 400;
+}
+
+p {
+    font-family: "Source Sans Pro", "Arial", sans-serif;
+    color: #727b8a;
+}
+
+
+/* ----------------- */
+/* Buttons and input */
+/* ----------------- */
+
+#text-input {
+    margin-right: 1rem;
+}
