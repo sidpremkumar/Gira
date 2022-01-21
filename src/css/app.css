@@ -112,3 +112,15 @@ html, body {
     flex-direction: column;
   }
    */
+   
+/* Ref: https://github.com/electron/electron/issues/3009 */
+.top-titlebar {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 32px;
+    -webkit-user-select: none;
+    -webkit-app-region: drag;
+    z-index: -1;
+  }

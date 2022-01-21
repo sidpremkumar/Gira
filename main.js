@@ -39,7 +39,8 @@ async function createIndex () {
             enableRemoteModule: true,
             spellcheck: true,
             webviewTag: true
-        }
+        },
+        titleBarStyle : 'hidden'
     })
 
     // Check if we have any user that's logged in
@@ -188,7 +189,6 @@ async function saveToTickets(nameToSave, urlToSave) {
 
 async function updateSidebar(userInfo) {
     // Let our sidebar know of the state
-    sideBarView.webContents.send('sidebar-bookmarks', userInfo)
     sideBarView.webContents.send('sidebar-bookmarks', userInfo)
     sideBarView.webContents.send('sidebar-tickets', userInfo)
 }
