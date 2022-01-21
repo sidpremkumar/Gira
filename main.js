@@ -25,23 +25,7 @@ let jiraDomain;
 let mainWindow;
 let jiraView; 
 let sideBarView; 
-
-// Show our context menu (i.e. right click options) on the main screen
-contextMenu({
-    window: mainWindow,
-    prepend: (defaultActions, params, mainWindow) => [
-        // Can add custom right click actions here
-        {
-            label: 'Inspect Element',
-            click: () =>
-            {
-                mainWindow.webContents.inspectElement (0, 0);
-            }
-        }
-    ], 
-    showInspectElement: false
-    },
-);
+let loginView;
 
 async function createIndex () {
     const [ width, height ] = utils.getRealScreen()
@@ -66,21 +50,12 @@ async function createIndex () {
         jiraDomain = existingUser['domain'];
 
         await setMainView(existingUser)
-
-        // Also update the sidebar
-        await updateSidebar(existingUser)
-
     } else {
-        // and load the index.html of the app.
-        mainWindow.loadURL(url.format({
-            pathname: path.join(__dirname, 'src/html/index.html'),
-            protocol: 'file:',
-            slashes: true
-        }))
+        await setLoginView()
     }
 }
 
-// receive message from index.html 
+// receive message from login.html 
 ipcMain.on('creds', async (event, domainName) => {
     // First format the domain name
     domainName = utils.formatDomainName(domainName)
@@ -102,13 +77,10 @@ ipcMain.on('creds', async (event, domainName) => {
     jiraDomain = domainName;
 
     await setMainView(existingUser)
-
-    // Also update the sidebar
-    await updateSidebar(existingUser)
 });
 
 // receive message from sidebar.html 
-ipcMain.on('sidebar-exit', (event, arg) => {
+ipcMain.on('sidebar-exit', async (event, arg) => {
     // Clear all views
     // TODO: Clear cookies so they have to re-login
     mainWindow.setBrowserView(null)
@@ -119,12 +91,8 @@ ipcMain.on('sidebar-exit', (event, arg) => {
     database.DeleteUser(jiraDomain)
     jiraDomain = null
 
-    // and load the index.html of the app.
-    mainWindow.loadURL(url.format({
-        pathname: path.join(__dirname, 'src/html/index.html'),
-        protocol: 'file:',
-        slashes: true
-    }))
+    // and load the login.html of the app.
+    await setLoginView()
 });
 ipcMain.on('sidebar-home', (event, arg) => {
     // Let our tab group know to switch to the main tab
@@ -222,16 +190,13 @@ async function saveToTickets(nameToSave, urlToSave) {
 async function updateSidebar(userInfo) {
     // Let our sidebar know of the state
     sideBarView.webContents.send('sidebar-bookmarks', userInfo)
+    sideBarView.webContents.send('sidebar-bookmarks', userInfo)
     sideBarView.webContents.send('sidebar-tickets', userInfo)
 }
 
 async function setMainView(userInfo) {
     // Clear the main window
-    mainWindow.loadURL(url.format({
-        pathname: path.join(__dirname, 'src/html/blank.html'),
-        protocol: 'file:',
-        slashes: true
-    }))
+    mainWindow.setBrowserView(null)
 
     const [ width, height ] = utils.getRealScreen()
 
@@ -387,6 +352,12 @@ async function setMainView(userInfo) {
             );
         }
     });
+
+    // Also update the sidebar when its loaded
+    sideBarView.webContents.on('did-finish-load', async () => {
+        await updateSidebar(existingUser)
+    });
+
 }
 
 function getUrlName(url) {
@@ -419,4 +390,31 @@ function openNewTab(newUrl) {
         'title': title 
     }
     jiraView.webContents.send('tabgroup-tab', newTabInfo);
+}
+
+async function setLoginView() {
+    // Load the login page of our app
+
+    const [ width, height ] = utils.getRealScreen()
+    
+    loginView  = new BrowserView({webPreferences: {
+        nodeIntegration: true,
+        contextIsolation: false,
+        spellcheck: true,
+        webviewTag: true
+    }})
+
+    // Add the view
+    mainWindow.addBrowserView(loginView)
+
+    // Set the bound of the sidebar
+    loginView.setBounds({ x: 0, y: 0, width: width, height: height })
+    loginView.setAutoResize({ width: true, height: true });
+
+    // Load contents into these views
+    loginView.webContents.loadURL(url.format({
+        pathname: path.join(__dirname, 'src/html/login.html'),
+        protocol: 'file:',
+        slashes: true
+    }))
 }
