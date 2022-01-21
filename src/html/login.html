@@ -4,10 +4,19 @@
     <meta charset="UTF-8">
     <title>Jira Client</title>
     <link rel="stylesheet" href="../css/app.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/1318192b5a.js" crossorigin="anonymous"></script>
 </head>
-<body>
-    <div class="centered">
-        <h1>Welcome to Jira Client</h1>
+<body style="background-color: #0052CC;">
+    <div class="top-titlebar"></div>
+    
+    <div class="centered welcome-card">
+        <h1>Welcome <span class="arrows"><i class="fas fa-angle-right" style="color:#183152"></i> <i class="fas fa-angle-right" style="color:#506d94"></i> <i class="fas fa-angle-right" style="color:#e3efff"></i></span></h1>
         <form id="creds" class="url-form">
             <h3>Enter your Jira domain name: </h3>
             <h3><input class="text-input" type="text", id="jiradomain" placeholder="https://test.atlassian.net/"><button>Submit</button></h3>

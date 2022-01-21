@@ -26,7 +26,7 @@ let sideBarView;
 let loginView;
 
 async function createIndex () {
-    const [ width, height ] = utils.getRealScreen()
+    const [ width, height ] = getRealScreen()
 
     // Create the main browser window.
     mainWindow = new BrowserWindow({
@@ -39,7 +39,9 @@ async function createIndex () {
             enableRemoteModule: true,
             spellcheck: true,
             webviewTag: true
-        }})
+        },
+        titleBarStyle : 'hidden'
+    })
 
     // Check if we have any user that's logged in
     existingUser = await database.FindExistingUser() 
@@ -188,15 +190,12 @@ async function saveToTickets(nameToSave, urlToSave) {
 async function updateSidebar(userInfo) {
     // Let our sidebar know of the state
     sideBarView.webContents.send('sidebar-bookmarks', userInfo)
-    sideBarView.webContents.send('sidebar-bookmarks', userInfo)
     sideBarView.webContents.send('sidebar-tickets', userInfo)
 }
 
 async function setMainView(userInfo) {
     // Clear the main window
     mainWindow.setBrowserView(null)
-
-    const [ width, height ] = utils.getRealScreen()
 
     // Create a window for the jira content and sidebar
     jiraView  = new BrowserView({webPreferences: {
@@ -215,11 +214,19 @@ async function setMainView(userInfo) {
     mainWindow.addBrowserView(sideBarView)
 
     // Set the bound of the sidebar
-    const sidebarWidth = parseInt(width * 0.2);
-    sideBarView.setBounds({ x: 0, y: 0, width: sidebarWidth, height: height })
-    sideBarView.setAutoResize({ width: true, height: true });
-    jiraView.setBounds({ x: sidebarWidth, y: 0, width: width - sidebarWidth, height: height })
-    jiraView.setAutoResize({ width: true, height: true });
+    const [ width, height ] = getRealScreen()
+    await setMainViewBounds(width, height)
+
+    // Height set to false on purpose
+    // Ref: https://github.com/electron/electron/issues/13468#issuecomment-640195477
+    sideBarView.setAutoResize({ width: true, height: false });
+    jiraView.setAutoResize({ width: true, height: false });
+
+    // Adjust the bounds of views on resize of the main window
+    mainWindow.on('resize', async function () {
+        const [ width, height ] = mainWindow.getSize();
+        await setMainViewBounds(width, height)
+    });
 
     // Load contents into these views
     jiraView.webContents.loadURL(url.format({
@@ -280,17 +287,6 @@ async function setMainView(userInfo) {
             showInspectElement: false
             },
         );
-
-        // Also let our sidebar know of the bookmarks for the user
-        // // Also let our tabgroup know the default info
-        // const initInfo = {
-        //     'domain': domainName,
-        //     'title': '/'
-        // }
-        // jiraView.webContents.send('tabgroup-init', initInfo);
-
-        // // And open a new tab
-        // openNewTab(domainName);
     });
 
     // Ref: https://github.com/sindresorhus/electron-context-menu/issues/37#issuecomment-628657983
@@ -394,7 +390,7 @@ function openNewTab(newUrl) {
 async function setLoginView() {
     // Load the login page of our app
 
-    const [ width, height ] = utils.getRealScreen()
+    const [ width, height ] = getRealScreen()
     
     loginView  = new BrowserView({webPreferences: {
         nodeIntegration: true,
@@ -406,7 +402,7 @@ async function setLoginView() {
     // Add the view
     mainWindow.addBrowserView(loginView)
 
-    // Set the bound of the sidebar
+    // Set the bound of the login view
     loginView.setBounds({ x: 0, y: 0, width: width, height: height })
     loginView.setAutoResize({ width: true, height: true });
 
@@ -416,4 +412,58 @@ async function setLoginView() {
         protocol: 'file:',
         slashes: true
     }))
+
+    // Perform any actions needed on load
+    loginView.webContents.on('did-finish-load', () => {
+        contextMenu({
+            window: loginView,
+            prepend: (defaultActions, params, mainWindow) => [
+                // Can add custom right click actions here
+                {
+                    label: 'Inspect Element',
+                    click: () =>
+                    {
+                        loginView.webContents.inspectElement (0, 0);
+                    }
+                }
+            ], 
+            showInspectElement: false
+            },
+        );
+    });
+}
+
+async function setMainViewBounds(width, height) {
+    // Helper function to set mainview bounds
+    let sidebarWidth = parseInt(width * 0.2);
+
+    // Always make sure the sidebar is between these bounds
+    const minSidebarWidth = 150;
+    const maxSidebarWidth = 250;
+    if (sidebarWidth < minSidebarWidth) {
+        sidebarWidth = minSidebarWidth;
+    }
+    if (sidebarWidth > maxSidebarWidth) {
+        sidebarWidth = maxSidebarWidth;
+    }
+
+    sideBarView.setBounds({ x: 0, y: 0, width: sidebarWidth, height: height })
+    jiraView.setBounds({ x: sidebarWidth, y: 0, width: width - sidebarWidth, height: height })
+}
+
+function getRealScreen() {
+    // If the main window hasn't been created, determine based on the screen size
+    if (mainWindow == undefined) {
+        // Set the height weight the monitor dimensions
+        const screenElectron = electron.screen;
+        const primaryDisplay = screenElectron.getPrimaryDisplay()
+        const { width, height } = primaryDisplay.workAreaSize
+
+        // Don't return full w/h since it causes some resizing issues
+        return [width - 250 , height - 250]
+    } else {
+        // Else just return the mainwindows size
+        return mainWindow.getSize()
+    }
+   
 }

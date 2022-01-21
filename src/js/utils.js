@@ -1,15 +1,5 @@
 const electron = require('electron');
 
-function getRealScreen() {
-    // Set the height weight the monitor dimensions
-    const screenElectron = electron.screen;
-    const primaryDisplay = screenElectron.getPrimaryDisplay()
-    const { width, height } = primaryDisplay.workAreaSize
-
-    // Don't return full w/h since it causes some resizing issues
-    return [width - 250 , height - 250]
-}
-
 function getEmptyUser(domainName) {
     // Helper function get a empty (new) user
     return {
@@ -50,4 +40,4 @@ function formatDomainName(domainName) {
 }
 
 
-module.exports = { getRealScreen, getEmptyUser, formatDomainName }
+module.exports = { getEmptyUser, formatDomainName }

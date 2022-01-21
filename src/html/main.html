@@ -7,96 +7,103 @@
   <link rel="stylesheet" href="../css/app.css">
 </head>
 <body style="margin:0">
+  <div class="top-titlebar"></div>
 
-<div class="etabs-tabgroup">
-  <div class="etabs-tabs"></div>
-  <div class="etabs-buttons"></div>
-</div>
-<div class="etabs-views"></div>
+  <div class="etabs-tabgroup">
+    <div class="etabs-tabs"></div>
+    <div class="etabs-buttons"></div>
+  </div>
+  <div class="etabs-views"></div>
 
 
-<script>
-  const { ipcRenderer, shell } = require('electron')
-  const TabGroup = require('electron-tabs')
+  <script>
+    const { ipcRenderer, shell } = require('electron')
+    const TabGroup = require('electron-tabs')
 
-  let tabGroup = undefined;
-  let domain = undefined;
+    let tabGroup = undefined;
+    let domain = undefined;
 
-  ipcRenderer.on('tabgroup-init', (event, arg) => {
-    domain = arg['domain']
-    tabGroup = new TabGroup({
-      newTab: {
-        title: arg['title'],
-        src: arg['domain'],
-        ready: readyFunction
-      }
-    });
-  })
-
-  // Function to open a new tab for us
-  ipcRenderer.on('tabgroup-tab', (event, arg) => {
-    if (tabGroup !== undefined) {
-        var newTab = tabGroup.addTab({
+    ipcRenderer.on('tabgroup-init', (event, arg) => {
+      domain = arg['domain']
+      tabGroup = new TabGroup({
+        newTab: {
           title: arg['title'],
           src: arg['domain'],
-          ready: readyFunction,
-          active: true,
-        });
-    } else {
-      console.log("tabgroup is still undefined")
-    }
-  })
-
-  // Function to move back the current tab
-  ipcRenderer.on('tabgroup-back', (event, arg) => {
-    if (tabGroup !== undefined) {
-      var activateTab = tabGroup.getActiveTab() 
-      activateTab.webview.goBack()
-    } else {
-      console.log("tabgroup is still undefined")
-    }
-  })
-
-  // Function to move forward the current tab
-  ipcRenderer.on('tabgroup-forward', (event, arg) => {
-    if (tabGroup !== undefined) {
-      var activateTab = tabGroup.getActiveTab() 
-      activateTab.webview.goForward()
-    } else {
-      console.log("tabgroup is still undefined")
-    }
-  })
-
-  function readyFunction(tab) {
-    // Function to be called when the tab is ready 
-
-    // Add a tracker to keep updating the tab name
-    tab.webview.addEventListener('page-title-updated', event => {
-      // Update the title of the tab
-      tab.setTitle(event['title'])
+          ready: readyFunction
+        }
+      });
     })
 
-    // Ensure that external pages will get displayed on the default browser
-    tab.webview.addEventListener('will-navigate', event => {
-      // Check if the jira domain is in the url
-      if (!event.url.includes(domain)) {
-        // Open the url in the regular browser
-        shell.openExternal(event.url);
-
-        // Ref: https://www.electronjs.org/docs/latest/api/webview-tag#webviewstop
-        tab.webview.stop()
+    // Function to open a new tab for us
+    ipcRenderer.on('tabgroup-tab', (event, arg) => {
+      if (tabGroup !== undefined) {
+          var newTab = tabGroup.addTab({
+            title: arg['title'],
+            src: arg['domain'],
+            ready: readyFunction,
+            active: true,
+          });
+      } else {
+        console.log("tabgroup is still undefined")
       }
-    }, true);
-  }
+    })
 
-  ipcRenderer.on('tabgroup-switch', (event, arg) => {
-    var activateTab = tabGroup.getActiveTab()
-    if (activateTab != null) {
-      let webview = activateTab.webview;
-      webview.loadURL(arg['domain']);
-      activateTab.setTitle(arg['title'])
+    // Function to move back the current tab
+    ipcRenderer.on('tabgroup-back', (event, arg) => {
+      if (tabGroup !== undefined) {
+        var activateTab = tabGroup.getActiveTab() 
+        activateTab.webview.goBack()
+      } else {
+        console.log("tabgroup is still undefined")
+      }
+    })
+
+    // Function to move forward the current tab
+    ipcRenderer.on('tabgroup-forward', (event, arg) => {
+      if (tabGroup !== undefined) {
+        var activateTab = tabGroup.getActiveTab() 
+        activateTab.webview.goForward()
+      } else {
+        console.log("tabgroup is still undefined")
+      }
+    })
+
+    function readyFunction(tab) {
+      // Function to be called when the tab is ready 
+
+      // Add a tracker to keep updating the tab name
+      tab.webview.addEventListener('page-title-updated', event => {
+        // Update the title of the tab
+        tab.setTitle(event['title'])
+      })
+
+      // Ensure that external pages will get displayed on the default browser
+      tab.webview.addEventListener('will-navigate', event => {
+        // Check if the jira domain is in the url
+        if (!event.url.includes(domain)) {
+          // Open the url in the regular browser
+          shell.openExternal(event.url);
+
+          // Ref: https://www.electronjs.org/docs/latest/api/webview-tag#webviewstop
+          tab.webview.stop()
+        }
+      }, true);
+
+      // Remove this once https://github.com/electron/electron/issues/14474 is fixed 
+      tab.webview.addEventListener("dom-ready", event => { 
+        tab.webview.blur(); 
+        tab.webview.focus(); 
+      });
     }
-  })
-</script>
+
+    ipcRenderer.on('tabgroup-switch', (event, arg) => {
+      var activateTab = tabGroup.getActiveTab()
+      if (activateTab != null) {
+        let webview = activateTab.webview;
+        webview.loadURL(arg['domain']);
+        activateTab.setTitle(arg['title'])
+      }
+    })
+  </script>
 </body>
 </html>
