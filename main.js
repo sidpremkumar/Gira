@@ -26,7 +26,7 @@ let sideBarView;
 let loginView;
 
 async function createIndex () {
-    const [ width, height ] = utils.getRealScreen()
+    const [ width, height ] = getRealScreen()
 
     // Create the main browser window.
     mainWindow = new BrowserWindow({
@@ -196,7 +196,7 @@ async function setMainView(userInfo) {
     // Clear the main window
     mainWindow.setBrowserView(null)
 
-    const [ width, height ] = utils.getRealScreen()
+    const [ width, height ] = getRealScreen()
 
     // Create a window for the jira content and sidebar
     jiraView  = new BrowserView({webPreferences: {
@@ -215,11 +215,7 @@ async function setMainView(userInfo) {
     mainWindow.addBrowserView(sideBarView)
 
     // Set the bound of the sidebar
-    const sidebarWidth = parseInt(width * 0.2);
-    sideBarView.setBounds({ x: 0, y: 0, width: sidebarWidth, height: height })
-    sideBarView.setAutoResize({ width: true, height: true });
-    jiraView.setBounds({ x: sidebarWidth, y: 0, width: width - sidebarWidth, height: height })
-    jiraView.setAutoResize({ width: true, height: true });
+    await setSideBarBounds()
 
     // Load contents into these views
     jiraView.webContents.loadURL(url.format({
@@ -394,7 +390,7 @@ function openNewTab(newUrl) {
 async function setLoginView() {
     // Load the login page of our app
 
-    const [ width, height ] = utils.getRealScreen()
+    const [ width, height ] = getRealScreen()
     
     loginView  = new BrowserView({webPreferences: {
         nodeIntegration: true,
@@ -406,7 +402,7 @@ async function setLoginView() {
     // Add the view
     mainWindow.addBrowserView(loginView)
 
-    // Set the bound of the sidebar
+    // Set the bound of the login view
     loginView.setBounds({ x: 0, y: 0, width: width, height: height })
     loginView.setAutoResize({ width: true, height: true });
 
@@ -416,4 +412,32 @@ async function setLoginView() {
         protocol: 'file:',
         slashes: true
     }))
+}
+
+async function setSideBarBounds() {
+    // Helper function to set sidebar bounds
+    const [ width, height ] = getRealScreen()
+
+    const sidebarWidth = parseInt(width * 0.2);
+    sideBarView.setBounds({ x: 0, y: 0, width: sidebarWidth, height: height })
+    sideBarView.setAutoResize({ width: true, height: true });
+    jiraView.setBounds({ x: sidebarWidth, y: 0, width: width - sidebarWidth, height: height })
+    jiraView.setAutoResize({ width: true, height: true });
+}
+
+function getRealScreen() {
+    // If the main window hasn't been created, determine based on the screen size
+    if (mainWindow == undefined) {
+        // Set the height weight the monitor dimensions
+        const screenElectron = electron.screen;
+        const primaryDisplay = screenElectron.getPrimaryDisplay()
+        const { width, height } = primaryDisplay.workAreaSize
+
+        // Don't return full w/h since it causes some resizing issues
+        return [width - 250 , height - 250]
+    } else {
+        // Else just return the mainwindows size
+        return mainWindow.getSize()
+    }
+   
 }
