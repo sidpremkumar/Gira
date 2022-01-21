@@ -2,6 +2,8 @@
   "name": "jira-client",
   "version": "0.0.1",
   "main": "main.js",
+  "description": "An Electron client to view and bookmark Jira items!",
+  "license": "Apache-2.0",
   "scripts": {
     "start": "electron-forge start",
     "package": "electron-forge package",

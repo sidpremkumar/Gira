@@ -1,16 +1,36 @@
 version: 2.1
-orbs:
-  node: circleci/node@5.0.0 
-
 jobs:
-  install-node:
+  build:
+    working_directory: ~/repo
     docker:
-      - image: 'cimg/base:stable'
+      - image: circleci/node:16
     steps:
       - checkout
-      - node/install:
-          install-yarn: false
-          node-version: '16.13'
-      - run: node --version
-      - node/run:
-          npm-run: make
+      - run:
+          name: Update NPM
+          command: "sudo npm install -g npm"
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+      - run:
+          name: Install Dependencies
+          command: npm install
+      - run:
+          name: Install dpkg and fakeroot
+          command: |
+            sudo apt-get update -y
+            sudo apt-get install -y dpkg fakeroot
+      - run:
+          name: Install rpmbuild
+          command: |
+            sudo apt-get install rpm -y
+
+      - save_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+          paths:
+            - ./node_modules
+      - run:
+          name: Generate Builds
+          command: npm run make
+
+      - store_artifacts:
+          path: ~/repo/out/make
