@@ -4,19 +4,23 @@
     <meta charset="UTF-8">
     <title>Jira Client</title>
     <link rel="stylesheet" href="../css/app.css">
+    <script src="https://kit.fontawesome.com/1318192b5a.js" crossorigin="anonymous"></script>
   </head>
   <body>
-    <h2>Bookmarks</h2>
-    <div id="bookmarks">
-      <!-- This is where we will populate any bookmark links -->
+    <div class="sidebar-container">
+      <h2>Jira Client</h2>
+      <h4>Bookmarks</h4>
+      <div id="bookmarks">
+        <!-- This is where we will populate any bookmark links -->
+      </div>
+      <h4>Tickets</h4>
+      <div id="tickets">
+        <!-- This is where we will populate any ticket links -->
+      </div>
+      <br/>
+      <button class="circle-btn" onclick="onHome()"><i class="fas fa-home"></i></button>
+      <button class="circle-btn" onclick="onExit()"><i class="fas fa-times"></i></button>
     </div>
-    <h2>Tickets</h2>
-    <div id="tickets">
-      <!-- This is where we will populate any ticket links -->
-    </div>
-    <br/>
-    <button onclick="onHome()">Home</button>
-    <button onclick="onExit()">Exit</button>
   </body>
 
   <script>

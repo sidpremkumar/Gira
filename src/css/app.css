@@ -15,14 +15,26 @@ h1 {
 h2 {
     font-family: Charlie Display, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Noto Sans, Ubuntu, Droid Sans, Helvetica Neue, sans-serif;
     color: #2E415F;
-    font-weight: 400;
+    font-weight: 500;
     font-size: 2em;
 }
 
-p {
+h3 {
     font-family: "Source Sans Pro", "Arial", sans-serif;
     color: #727b8a;
     font-size: 1.5em;
+    font-weight: 300;
+}
+
+h4 {
+    font-family: "Source Sans Pro", "Arial", sans-serif;
+    color: #727b8a;
+    font-size: 1.3em;
+    font-weight: 300;
+}
+
+p {
+    font-family: sans-serif;
 }
 
 
@@ -35,7 +47,7 @@ button {
     border-radius: 3px;
     border: #deeaff 0.5px solid;
     color: #758eba;
-    padding: 6px 10px;
+    padding: 6.25px 10px;
     font-size: 0.75em;
 }
 
@@ -44,6 +56,15 @@ button:hover {
     background-color: white;
     color: #758eba;
     cursor: pointer;
+}
+
+.circle-btn {
+    border-radius: 50px;
+    padding: 5px;
+    font-size: 1.8em;
+    width: 3rem;
+    margin-left: 20px;
+    bottom: 20px;
 }
 
 .text-input {
@@ -74,4 +95,11 @@ button:hover {
 
 .url-form {
     margin-top: 3rem;
+}
+
+.sidebar-container {
+    margin: 15px;
+    width: 100%;
+    height: 100%;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }

@@ -252,9 +252,10 @@ async function setMainView(userInfo) {
     mainWindow.addBrowserView(sideBarView)
 
     // Set the bound of the sidebar
-    sideBarView.setBounds({ x: 0, y: 0, width: 200, height: height })
+    const sidebarWidth = width * 0.2;
+    sideBarView.setBounds({ x: 0, y: 0, width: sidebarWidth, height: height })
     sideBarView.setAutoResize({ width: true, height: true });
-    jiraView.setBounds({ x: 200, y: 0, width: width - 200, height: height })
+    jiraView.setBounds({ x: sidebarWidth, y: 0, width: width - sidebarWidth, height: height })
     jiraView.setAutoResize({ width: true, height: true });
 
     // Load contents into these views
