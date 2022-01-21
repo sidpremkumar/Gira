@@ -10,8 +10,8 @@ const contextMenu = require('electron-context-menu');
 var Datastore = require('nedb')
 
 // Local
-const utils = require('./src/js/utils')
-const database = require('./src/js/database')
+const utils = require('./services/utils')
+const database = require('./services/database')
 
 // Disables warnings
 process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true';
@@ -133,6 +133,13 @@ ipcMain.on('sidebar-ticketsdelete', async (event, arg) => {
 
     // Now update the bookmarks sidebar
     sideBarView.webContents.send('sidebar-tickets', userInfo)
+});
+
+// To capture our double click event on the top bar
+ipcMain.on('app-dblclick', async (event, arg) => {
+    if (mainWindow !== undefined) {
+        mainWindow.isMaximized() ? mainWindow.unmaximize() : mainWindow.maximize();
+    }
 });
 
 //call the creation function when app is done loading
