@@ -4,11 +4,9 @@ const url = require('url')
 
 // 3rd Party
 const { app, BrowserWindow, BrowserView } = require('electron')
-const { ipcMain, remote } = require('electron')
+const { ipcMain } = require('electron')
 const electron = require('electron');
-const electronReload = require('electron-reload');
 const contextMenu = require('electron-context-menu');
-const shell = require('electron').shell;
 var Datastore = require('nedb')
 
 // Local
