@@ -6,21 +6,21 @@
     <link rel="stylesheet" href="../css/app.css">
     <script src="https://kit.fontawesome.com/1318192b5a.js" crossorigin="anonymous"></script>
   </head>
-  <body>
-    <div class="sidebar-container">
+  <body class="sidebar-container">
       <h2>Jira Client</h2>
       <h4>Bookmarks</h4>
       <div id="bookmarks" class="link-group">
+        No bookmarks
         <!-- This is where we will populate any bookmark links -->
       </div>
       <h4>Tickets</h4>
       <div id="tickets" class="link-group">
+        No tickets
         <!-- This is where we will populate any ticket links -->
       </div>
       <br/>
       <button class="circle-btn" onclick="onHome()"><i class="fas fa-home"></i></button>
-      <button class="circle-btn" onclick="onExit()"><i class="fas fa-times"></i></button>
-    </div>
+      <button class="circle-btn" onclick="onExit()" style="margin-left:60px"><i class="fas fa-times"></i></button>
   </body>
 
   <script>

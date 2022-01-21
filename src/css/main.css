@@ -14,6 +14,7 @@
     -webkit-user-select: none;
     user-select: none;
     display: none;
+    padding: 5px 5px 0 5px;
   }
   
   .etabs-tabgroup.visible {
@@ -32,11 +33,13 @@
     border: 1px solid #aaa;
     border-bottom: none;
     border-left: none;
-    background: linear-gradient(to bottom, rgba(234,234,234,1) 0%,rgba(204,204,204,1) 100%);
+    background: #ccc;
     font: caption;
     font-size: 14px;
     background-color: #ccc;
     cursor: default;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
   }
   
   /* Dragula */
@@ -58,7 +61,7 @@
   }
   
   .etabs-tab.flash {
-    background: linear-gradient(to bottom, rgba(255,243,170,1) 0%,rgba(255,227,37,1) 100%);
+    background: #ccc;
   }
   
   .etabs-buttons {
