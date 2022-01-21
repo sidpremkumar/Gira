@@ -137,5 +137,5 @@ button:hover {
     height: 32px;
     -webkit-user-select: none;
     -webkit-app-region: drag;
-    z-index: -1;
+    z-index: -100;
   }
