@@ -427,7 +427,18 @@ async function setLoginView() {
 
 async function setMainViewBounds(width, height) {
     // Helper function to set mainview bounds
-    const sidebarWidth = parseInt(width * 0.2);
+    let sidebarWidth = parseInt(width * 0.2);
+
+    // Always make sure the sidebar is between these bounds
+    const minSidebarWidth = 150;
+    const maxSidebarWidth = 250;
+    if (sidebarWidth < minSidebarWidth) {
+        sidebarWidth = minSidebarWidth;
+    }
+    if (sidebarWidth > maxSidebarWidth) {
+        sidebarWidth = maxSidebarWidth;
+    }
+
     sideBarView.setBounds({ x: 0, y: 0, width: sidebarWidth, height: height })
     jiraView.setBounds({ x: sidebarWidth, y: 0, width: width - sidebarWidth, height: height })
 }
