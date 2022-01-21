@@ -349,7 +349,9 @@ async function setMainView(userInfo) {
                         }
                     }
                 ], 
-                showInspectElement: false
+                showInspectElement: false,
+                showCopyImage: true,
+                showSaveLinkAs: true
                 },
             );
         }
