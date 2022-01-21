@@ -28,7 +28,7 @@
       newTab: {
         title: arg['title'],
         src: arg['domain'],
-        ready: readyFunction,
+        ready: readyFunction
       }
     });
   })
@@ -39,7 +39,8 @@
         var newTab = tabGroup.addTab({
           title: arg['title'],
           src: arg['domain'],
-          ready: readyFunction
+          ready: readyFunction,
+          active: true,
         });
     } else {
       console.log("tabgroup is still undefined")
@@ -67,14 +68,13 @@
   })
 
   function readyFunction(tab) {
-    // Function to be called when the tab is ready
+    // Function to be called when the tab is ready 
 
     // Add a tracker to keep updating the tab name
     tab.webview.addEventListener('page-title-updated', event => {
       // Update the title of the tab
       tab.setTitle(event['title'])
     })
-
 
     // Ensure that external pages will get displayed on the default browser
     tab.webview.addEventListener('will-navigate', event => {
@@ -95,10 +95,6 @@
       activateTab.setTitle(arg['title'])
     }
   })
-
-
-
-
 </script>
 </body>
 </html>

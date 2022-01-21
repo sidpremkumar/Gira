@@ -5,9 +5,9 @@ function getRealScreen() {
     const screenElectron = electron.screen;
     const primaryDisplay = screenElectron.getPrimaryDisplay()
     const { width, height } = primaryDisplay.workAreaSize
-    const realWidth = width - 500;
-    const realHeight = height - 500; 
-    return [realWidth, realHeight]
+
+    // Don't return full w/h since it causes some resizing issues
+    return [width - 250 , height - 250]
 }
 
 function getEmptyUser(domainName) {
