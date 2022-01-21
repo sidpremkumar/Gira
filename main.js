@@ -39,7 +39,8 @@ async function createIndex () {
             enableRemoteModule: true,
             spellcheck: true,
             webviewTag: true
-        }})
+        }
+    })
 
     // Check if we have any user that's logged in
     existingUser = await database.FindExistingUser() 
@@ -196,8 +197,6 @@ async function setMainView(userInfo) {
     // Clear the main window
     mainWindow.setBrowserView(null)
 
-    const [ width, height ] = getRealScreen()
-
     // Create a window for the jira content and sidebar
     jiraView  = new BrowserView({webPreferences: {
         nodeIntegration: true,
@@ -215,7 +214,19 @@ async function setMainView(userInfo) {
     mainWindow.addBrowserView(sideBarView)
 
     // Set the bound of the sidebar
-    await setSideBarBounds()
+    const [ width, height ] = getRealScreen()
+    await setMainViewBounds(width, height)
+
+    // Height set to false on purpose
+    // Ref: https://github.com/electron/electron/issues/13468#issuecomment-640195477
+    sideBarView.setAutoResize({ width: true, height: false });
+    jiraView.setAutoResize({ width: true, height: false });
+
+    // Adjust the bounds of views on resize of the main window
+    mainWindow.on('resize', async function () {
+        const [ width, height ] = mainWindow.getSize();
+        await setMainViewBounds(width, height)
+    });
 
     // Load contents into these views
     jiraView.webContents.loadURL(url.format({
@@ -414,15 +425,11 @@ async function setLoginView() {
     }))
 }
 
-async function setSideBarBounds() {
-    // Helper function to set sidebar bounds
-    const [ width, height ] = getRealScreen()
-
+async function setMainViewBounds(width, height) {
+    // Helper function to set mainview bounds
     const sidebarWidth = parseInt(width * 0.2);
     sideBarView.setBounds({ x: 0, y: 0, width: sidebarWidth, height: height })
-    sideBarView.setAutoResize({ width: true, height: true });
     jiraView.setBounds({ x: sidebarWidth, y: 0, width: width - sidebarWidth, height: height })
-    jiraView.setAutoResize({ width: true, height: true });
 }
 
 function getRealScreen() {
