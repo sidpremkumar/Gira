@@ -49,6 +49,7 @@ async function createIndex () {
     mainWindow = new BrowserWindow({
         width: width, 
         height: height,
+        useContentSize: true,
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false,
@@ -239,7 +240,9 @@ async function setMainView(userInfo) {
 
     // Set the bound of the sidebar
     sideBarView.setBounds({ x: 0, y: 0, width: 200, height: height })
+    sideBarView.setAutoResize({ width: true, height: true });
     jiraView.setBounds({ x: 200, y: 0, width: width - 200, height: height })
+    jiraView.setAutoResize({ width: true, height: true });
 
     // Load contents into these views
     jiraView.webContents.loadURL(url.format({

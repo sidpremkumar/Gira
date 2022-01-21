@@ -15,7 +15,7 @@
 
 
 <script>
-  const { ipcRenderer } = require('electron')
+  const { ipcRenderer, shell } = require('electron')
   const TabGroup = require('electron-tabs')
 
   let tabGroup = undefined;
@@ -73,6 +73,17 @@
       // Update the title of the tab
       tab.setTitle(event['title'])
     })
+
+
+    // Ensure that external pages will get displayed on the default browser
+    tab.webview.addEventListener('will-navigate', event => {
+      // Check if the jira domain is in the url
+      if (!event.url.includes(domain)) {
+        event.preventDefault();
+        event.returnValue = '';
+        shell.openExternal(event.url);
+      }
+    }, true);
   }
 
   ipcRenderer.on('tabgroup-switch', (event, arg) => {
@@ -83,6 +94,8 @@
       activateTab.setTitle(arg['title'])
     }
   })
+
+
 
 
 </script>
