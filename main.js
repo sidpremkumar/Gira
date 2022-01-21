@@ -215,7 +215,7 @@ async function setMainView(userInfo) {
     mainWindow.addBrowserView(sideBarView)
 
     // Set the bound of the sidebar
-    const sidebarWidth = width * 0.2;
+    const sidebarWidth = parseInt(width * 0.2);
     sideBarView.setBounds({ x: 0, y: 0, width: sidebarWidth, height: height })
     sideBarView.setAutoResize({ width: true, height: true });
     jiraView.setBounds({ x: sidebarWidth, y: 0, width: width - sidebarWidth, height: height })
