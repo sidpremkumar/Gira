@@ -1,5 +1,5 @@
 # JiraClient
-Sadden by the news that Atlassian will be deprecating support for their Jira macOS app, we decided to try to build our own! 
+Saddened by the news that Atlassian will be deprecating support for their Jira macOS app, we decided to try to build our own! 
 
 
 ## Developing
