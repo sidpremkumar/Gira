@@ -102,6 +102,9 @@ ipcMain.on('creds', async (event, domainName) => {
     jiraDomain = domainName;
 
     await setMainView(existingUser)
+
+    // Also update the sidebar
+    await updateSidebar(existingUser)
 });
 
 // receive message from sidebar.html 
