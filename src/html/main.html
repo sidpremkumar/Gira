@@ -80,9 +80,11 @@
     tab.webview.addEventListener('will-navigate', event => {
       // Check if the jira domain is in the url
       if (!event.url.includes(domain)) {
-        event.preventDefault();
-        event.returnValue = '';
+        // Open the url in the regular browser
         shell.openExternal(event.url);
+
+        // Ref: https://www.electronjs.org/docs/latest/api/webview-tag#webviewstop
+        tab.webview.stop()
       }
     }, true);
   }
