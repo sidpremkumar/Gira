@@ -143,3 +143,8 @@ button:hover {
     -webkit-app-region: drag;
     z-index: -100;
   }
+
+
+html {
+    overflow: scroll
+}

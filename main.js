@@ -38,7 +38,8 @@ async function createIndex () {
             contextIsolation: false,
             enableRemoteModule: true,
             spellcheck: true,
-            webviewTag: true
+            webviewTag: true,
+            scrollBounce: true
         },
         titleBarStyle : 'hidden'
     })
@@ -98,7 +99,7 @@ ipcMain.on('sidebar-home', (event, arg) => {
     // Let our tab group know to switch to the main tab
     const newTabInfo = {
         'domain': jiraDomain,
-        'title': '/' 
+        'title': 'Untitled' 
     }
 
     jiraView.webContents.send('tabgroup-switch', newTabInfo);
@@ -107,7 +108,7 @@ ipcMain.on('sidebar-linkclick', (event, arg) => {
     // Let our tab group know to switch to the main tab
     const newTabInfo = {
         'domain': arg['url'],
-        'title': arg['name']
+        'title': 'Untilted'
     }
 
     jiraView.webContents.send('tabgroup-switch', newTabInfo);
@@ -209,11 +210,13 @@ async function setMainView(userInfo) {
         nodeIntegration: true,
         contextIsolation: false,
         spellcheck: true,
-        webviewTag: true
+        webviewTag: true,
+        scrollBounce: true
     }})
     sideBarView = new BrowserView({webPreferences: {
         nodeIntegration: true,
         contextIsolation: false,
+        scrollBounce: true,
     }})
 
     // Add them both to the view
@@ -269,7 +272,7 @@ async function setMainView(userInfo) {
         // Also let our tabgroup know the default info
         const initInfo = {
             'domain': userInfo['domain'],
-            'title': '/'
+            'title': 'Untitled'
         }
         jiraView.webContents.send('tabgroup-init', initInfo);
 
@@ -381,17 +384,11 @@ function moveForward() {
 
 function openNewTab(newUrl) {
     // TODO: Try catch this
-    // For now the name of tabs is just the path of the url
-    let title = '/'
-
-    if (newUrl != jiraDomain) {
-        title = getUrlName(newUrl)
-    }
 
     // Helper function to send new tab info over our ipc
     const newTabInfo = {
         'domain': newUrl,
-        'title': title 
+        'title': 'Untitled'
     }
     jiraView.webContents.send('tabgroup-tab', newTabInfo);
 }
