@@ -23,4 +23,5 @@ We use [Electrion Forge](https://www.electronforge.io) to build. To build for yo
 > npm run make
 ```
 
-And the relevant files can be found under `./out`!
+And the relevant files can be found under `./out`!i
+
