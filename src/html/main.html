@@ -5,7 +5,6 @@
   <title>electron-tabs-demo</title>
   <link rel="stylesheet" href="../css/main.css">
   <link rel="stylesheet" href="../css/app.css">
-  <link rel="stylesheet" href="../../node_modules/dist/dragula.css">
 </head>
 <body style="margin:0">
   <!-- <div class="top-titlebar"></div> -->
@@ -34,6 +33,17 @@
           ready: readyFunction
         }
       });
+
+      tabGroup.on('tab-added', (tab, tabGroup) => {
+        // Let our main.js function know of this new tab
+        ipcRenderer.send('tab-added', tab.id)
+      })
+
+      tabGroup.on('tab-removed', (tab, tabGroup) => {
+        // Let our main.js function know of this tab Id that has been deleted
+        ipcRenderer.send('tab-removed', tab.id)
+      })
+
     })
 
     // Function to open a new tab for us
@@ -44,6 +54,11 @@
             src: arg['domain'],
             ready: readyFunction,
             active: true,
+            webviewAttributes: {
+              webpreferences: {
+                scrollBounce: true
+              }
+            }
           });
       } else {
         console.log("tabgroup is still undefined")
@@ -71,7 +86,7 @@
     })
 
     function readyFunction(tab) {
-      // Function to be called when the tab is ready 
+      // Function to be called when the tab is ready
 
       dragula([tabGroup.tabContainer], {
         direction: "horizontal"
@@ -81,6 +96,13 @@
       tab.webview.addEventListener('page-title-updated', event => {
         // Update the title of the tab
         tab.setTitle(event['title'])
+
+        // Update the state of the tab
+        const tabInfo = {
+          'url': tab.webview.src,
+          'id': tab.id
+        }
+        ipcRenderer.send('tab-update', tabInfo)
       })
 
       // Ensure that external pages will get displayed on the default browser
@@ -92,6 +114,7 @@
 
           // Ref: https://www.electronjs.org/docs/latest/api/webview-tag#webviewstop
           tab.webview.stop()
+          return; 
         }
       }, true);
 
@@ -113,5 +136,6 @@
   </script>
 </body>
 <!-- Load this after the body has been created -->
-<script src="../js/app.js"></script>
+<!-- <script src="../js/app.js"></script> -->
+<link rel="stylesheet" href="../css/dragula.css">
 </html>

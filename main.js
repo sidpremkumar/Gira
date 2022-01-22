@@ -11,7 +11,8 @@ var Datastore = require('nedb')
 
 // Local
 const utils = require('./services/utils')
-const database = require('./services/database')
+const database = require('./services/database');
+const { userInfo } = require('os');
 
 // Disables warnings
 process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true';
@@ -24,6 +25,10 @@ let mainWindow;
 let jiraView; 
 let sideBarView; 
 let loginView;
+
+// These will be a list of the urls of active tabs
+// This list preserves order of tabs
+let activeTabs = []
 
 async function createIndex () {
     const [ width, height ] = getRealScreen()
@@ -143,15 +148,64 @@ ipcMain.on('app-dblclick', async (event, arg) => {
     }
 });
 
+// To capture tab events
+ipcMain.on('tab-added', async (event, arg) => {
+    // When the user opens a new tab on the ui
+    // Save this tab to the list of active tabs in memory
+    // On app quit we will save this to our db to preserve the tab info
+    activeTabs.push({
+        'url': jiraDomain,
+        'id': arg
+    })
+})
+ipcMain.on('tab-update', async (event, arg) => {
+    const url = arg['url'];
+    const id = arg['id'];
+    activeTabs.forEach((element, index) => {
+        if (element['id'] == id) {
+            activeTabs[index] = {
+                'url': url,
+                'id': id
+            }
+            return
+        }
+    })
+})
+ipcMain.on('tab-removed', async (event, arg) => {
+    // Loop over active tabs, and remove when we find that tab id
+    activeTabs.forEach((element, index) => {
+        if (element['id'] == arg) {
+            activeTabs = activeTabs.splice(index, index)
+            return
+        }
+    })
+})
+
 //call the creation function when app is done loading
 app.whenReady().then(createIndex)
 
 //this event is invoked when user is quitting the application
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit()
-  }
+app.on('window-all-closed' , async () => {
+    await saveActiveTabs();
+
+    if (process.platform !== 'darwin') {
+        app.quit()
+    }
 })
+
+app.on('before-quit', async () => {
+   await saveActiveTabs();
+})
+
+async function saveActiveTabs() {
+    // Save the active tabs to the database
+    let userInfo = await database.GetUser(jiraDomain)
+    userInfo['activeTabs'] = [] 
+    activeTabs.forEach(tabInfo => {
+        userInfo['activeTabs'].push(tabInfo['url'])
+    })
+    database.UpdateUser(userInfo)
+}
 
 async function saveToBookmarks(nameToSave, urlToSave) {
     // First save this in our db
@@ -276,8 +330,15 @@ async function setMainView(userInfo) {
         }
         jiraView.webContents.send('tabgroup-init', initInfo);
 
-        // And open a new tab
-        openNewTab(userInfo['domain']);
+        // And open a new tab if there are no active tabs
+        if (userInfo['activeTabs'].length == 0) {
+            openNewTab(userInfo['domain']);
+        } else {
+            // Else loop over active tabs and open the
+            userInfo['activeTabs'].forEach(url => {
+                openNewTab(url);
+            });
+        }
     });
 
     // Perform any actions needed on load
@@ -365,11 +426,6 @@ async function setMainView(userInfo) {
         await updateSidebar(existingUser)
     });
 
-}
-
-function getUrlName(url) {
-    // Helper function to get a url name
-    return url.replace(jiraDomain, '')
 }
 
 function moveBack() {
