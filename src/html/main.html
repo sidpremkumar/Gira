@@ -44,6 +44,11 @@
         ipcRenderer.send('tab-removed', tab.id)
       })
 
+      tabGroup.on('tab-active', (tab, tabGroup) => {
+        // Let our main.js function know of this tab Id that has been deleted
+        ipcRenderer.send('tab-active', tab.id)
+      })
+
     })
 
     // Function to open a new tab for us
@@ -60,6 +65,20 @@
               }
             }
           });
+      } else {
+        console.log("tabgroup is still undefined")
+      }
+    })
+
+    // Function to move back the current tab based on the index
+    ipcRenderer.on('tabgroup-active', (event, arg) => {
+      if (tabGroup !== undefined) {
+        let getAllTabs = tabGroup.getTabs();
+        getAllTabs.forEach(tab => {
+          if (tab.id == arg) {
+            tab.activate();
+          }
+        })
       } else {
         console.log("tabgroup is still undefined")
       }

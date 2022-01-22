@@ -7,6 +7,7 @@ function getEmptyUser(domainName) {
         'bookmarks': [],
         'tickets': [],
         'activeTabs': [],
+        'activeTabIndex': -1
     }
 }
 

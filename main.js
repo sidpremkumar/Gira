@@ -28,7 +28,8 @@ let loginView;
 
 // These will be a list of the urls of active tabs
 // This list preserves order of tabs
-let activeTabs = []
+let activeTabs = [];
+let activeTabId = -1;
 
 async function createIndex () {
     const [ width, height ] = getRealScreen()
@@ -158,6 +159,10 @@ ipcMain.on('tab-added', async (event, arg) => {
         'id': arg
     })
 })
+ipcMain.on('tab-active', async (event, arg) => {
+    // Keep track of the activeTabId
+    activeTabId = arg
+})
 ipcMain.on('tab-update', async (event, arg) => {
     const url = arg['url'];
     const id = arg['id'];
@@ -201,9 +206,16 @@ async function saveActiveTabs() {
     // Save the active tabs to the database
     let userInfo = await database.GetUser(jiraDomain)
     userInfo['activeTabs'] = [] 
-    activeTabs.forEach(tabInfo => {
+    activeTabIndex = -1;
+    activeTabs.forEach((tabInfo, index) => {
         userInfo['activeTabs'].push(tabInfo['url'])
+        if (tabInfo['id'] == activeTabId) {
+            activeTabIndex = index;
+        }
     })
+
+    // Save the index of the active tab
+    userInfo['activeTabIndex'] = activeTabId;
     database.UpdateUser(userInfo)
 }
 
@@ -306,7 +318,7 @@ async function setMainView(userInfo) {
     }))
 
     // Perform any actions needed on load
-    jiraView.webContents.on('did-finish-load', () => {
+    jiraView.webContents.on('did-finish-load', async () => {
         contextMenu({
             window: jiraView,
             prepend: (defaultActions, params, mainWindow) => [
@@ -330,15 +342,7 @@ async function setMainView(userInfo) {
         }
         jiraView.webContents.send('tabgroup-init', initInfo);
 
-        // And open a new tab if there are no active tabs
-        if (userInfo['activeTabs'].length == 0) {
-            openNewTab(userInfo['domain']);
-        } else {
-            // Else loop over active tabs and open the
-            userInfo['activeTabs'].forEach(url => {
-                openNewTab(url);
-            });
-        }
+        await setActiveTabs(userInfo)
     });
 
     // Perform any actions needed on load
@@ -426,6 +430,23 @@ async function setMainView(userInfo) {
         await updateSidebar(existingUser)
     });
 
+}
+
+async function setActiveTabs(userInfo) {
+    // Helper function to set existing tabs if they exist
+    // And open a new tab if there are no active tabs
+    if (userInfo['activeTabs'].length == 0) {
+        openNewTab(userInfo['domain']);
+    } else {
+        // Else loop over active tabs and open the tabs
+        userInfo['activeTabs'].forEach(url => {
+            openNewTab(url);
+        });
+
+        // Set the active tab
+        const activeTabIndex = userInfo['activeTabIndex'];
+        jiraView.webContents.send('tabgroup-active', activeTabIndex);
+    }
 }
 
 function moveBack() {
