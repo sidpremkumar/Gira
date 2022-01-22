@@ -1,6 +1,7 @@
 version: 2.1
 jobs:
   build:
+    resource_class: small
     working_directory: ~/repo
     docker:
       - image: circleci/node:16
