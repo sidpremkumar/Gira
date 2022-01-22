@@ -1,3 +1,5 @@
+[![CircleCI](https://circleci.com/gh/sidpremkumar/JiraClient/tree/main.svg?style=svg)](https://circleci.com/gh/sidpremkumar/JiraClient/tree/main)
+
 # JiraClient
 Saddened by the news that Atlassian will be deprecating support for their Jira macOS app, we decided to try to build our own! 
 
