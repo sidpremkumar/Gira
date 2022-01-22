@@ -7,7 +7,10 @@ function getEmptyUser(domainName) {
         'bookmarks': [],
         'tickets': [],
         'activeTabs': [],
-        'activeTabIndex': -1
+        'activeTabIndex': -1,
+        'settings': {
+            'apiKey': ''
+        }
     }
 }
 

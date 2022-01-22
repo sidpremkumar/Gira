@@ -3,7 +3,7 @@ const path = require('path')
 const url = require('url')
 
 // 3rd Party
-const { app, BrowserWindow, BrowserView, globalShortcut } = require('electron')
+const { app, BrowserWindow, BrowserView, globalShortcut, dialog } = require('electron')
 const { ipcMain } = require('electron')
 const electron = require('electron');
 const contextMenu = require('electron-context-menu');
@@ -12,7 +12,6 @@ var Datastore = require('nedb')
 // Local
 const utils = require('./services/utils')
 const database = require('./services/database');
-const { userInfo } = require('os');
 
 // Disables warnings
 process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true';
@@ -110,6 +109,52 @@ ipcMain.on('sidebar-home', (event, arg) => {
 
     jiraView.webContents.send('tabgroup-switch', newTabInfo);
 });
+ipcMain.on('sidebar-settings', async (event, arg) => {
+    // Create a settings window
+    const [ width, height ] = getRealScreen()
+    settingsWindow = new BrowserWindow({
+        width: width/2, 
+        height: height/2,
+        useContentSize: true,
+        webPreferences: {
+            nodeIntegration: true,
+            contextIsolation: false,
+            enableRemoteModule: true,
+            spellcheck: true,
+            webviewTag: true,
+            scrollBounce: true
+        },
+        titleBarStyle : 'hidden'
+    })
+
+    contextMenu({
+        window: settingsWindow,
+        prepend: (defaultActions, params, mainWindow) => [
+            // Can add custom right click actions here
+            {
+                label: 'Inspect Element',
+                click: () =>
+                {
+                    settingsWindow.inspectElement (0, 0);
+                }
+            }
+        ], 
+        showInspectElement: false
+        },
+    );
+
+    // Open the html
+    settingsWindow.loadURL(url.format({
+        pathname: path.join(__dirname, 'src/html/settings.html'),
+        protocol: 'file:',
+        slashes: true
+    }))
+
+    const userInfo = await database.GetUser(jiraDomain);
+    settingsWindow.webContents.on('did-finish-load', async () => {
+        settingsWindow.webContents.send('settings-init', userInfo['settings'])
+    })
+});
 ipcMain.on('sidebar-linkclick', (event, arg) => {
     // Let our tab group know to switch to the main tab
     const newTabInfo = {
@@ -186,6 +231,14 @@ ipcMain.on('tab-removed', async (event, arg) => {
     })
 })
 
+// For settings
+ipcMain.on('settings-update', async (event, arg) => {
+    // Update the settings value in the db
+    var existingUser = await database.GetUser(jiraDomain)
+    existingUser['settings'] = arg
+    database.UpdateUser(existingUser)
+})
+
 //call the creation function when app is done loading
 app.on('ready', async () => {
     createIndex()
@@ -251,12 +304,41 @@ async function saveToBookmarks(nameToSave, urlToSave) {
 }
 
 async function saveToTickets(nameToSave, urlToSave) {
+    // First validate this ticket url
+    console.log(urlToSave)
+    
+    const ticketRegex = /\/browse\/[A-Z]*-[0-9]*$/gm;
+    if (ticketRegex.exec(urlToSave) === null) {
+        // Raise an issue in a dialog
+        console.log('Invalid url for ticket')
+        const options = {
+            type: 'error',
+            title: 'That is not a ticket!',
+            message: 'It looks like that is not a ticket!',
+        };
+        dialog.showMessageBox(null, options);
+        return
+    }
+
     // First save this in our db
     var existingData = await database.GetUser(jiraDomain)
 
     // Ensure this url does not already exist
-    if (existingData['tickets'].includes(urlToSave)) {
+    let exists = false; 
+    existingData['tickets'].forEach(ticketInfo => {
+        if (ticketInfo['url'] == urlToSave) {
+            exists = true;
+            return
+        }
+    })
+    if (exists) {
         console.log('ticket already exists')
+        const options = {
+            type: 'error',
+            title: 'That ticket is already being tracked!',
+            message: 'That ticket is already being tracked!',
+        };
+        dialog.showMessageBox(null, options);
         return
     }
 
@@ -376,7 +458,7 @@ async function setMainView(userInfo) {
 
     // Ref: https://github.com/sindresorhus/electron-context-menu/issues/37#issuecomment-628657983
     // This is the right click event on the tabs themselves
-    app.on("web-contents-created", async (e, contents) => { 
+    app.on('web-contents-created', async (e, contents) => { 
         if (contents.getType() == "webview") {
             // set context menu in webview contextMenu({ window: contents, });
             contextMenu({
