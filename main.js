@@ -3,7 +3,7 @@ const path = require('path')
 const url = require('url')
 
 // 3rd Party
-const { app, BrowserWindow, BrowserView } = require('electron')
+const { app, BrowserWindow, BrowserView, globalShortcut } = require('electron')
 const { ipcMain } = require('electron')
 const electron = require('electron');
 const contextMenu = require('electron-context-menu');
@@ -187,19 +187,29 @@ ipcMain.on('tab-removed', async (event, arg) => {
 })
 
 //call the creation function when app is done loading
-app.whenReady().then(createIndex)
+app.on('ready', async () => {
+    createIndex()
+
+    if (process.platform === 'darwin') {
+        globalShortcut.register('Command+Q', async () => {
+            await saveActiveTabs(); 
+            const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
+            await delay(10)
+            app.quit();
+        })
+    }
+})
 
 //this event is invoked when user is quitting the application
 app.on('window-all-closed' , async () => {
     await saveActiveTabs();
 
-    if (process.platform !== 'darwin') {
-        app.quit()
-    }
-})
-
-app.on('before-quit', async () => {
-   await saveActiveTabs();
+    // For now we also quit the app when all the windows close
+    // Eventually we want macos to follow the normal window close behavior
+    app.quit();
+    // if (process.platform !== 'darwin') {
+    //     app.quit()
+    // }
 })
 
 async function saveActiveTabs() {
@@ -216,7 +226,7 @@ async function saveActiveTabs() {
 
     // Save the index of the active tab
     userInfo['activeTabIndex'] = activeTabId;
-    database.UpdateUser(userInfo)
+    await database.UpdateUser(userInfo)
 }
 
 async function saveToBookmarks(nameToSave, urlToSave) {

@@ -26,17 +26,21 @@ function AddUserData(newUserData) {
     })
 }
 
-function UpdateUser(newUserData) {
-    db.update({ domain: newUserData['domain'] }, newUserData, {}, function (err, numReplaced) {
-        // This should not happen
-        if (numReplaced.length == 0) {
-            console.log('No user found for given domain name')
-            resolve(null)
-        } else {
-            console.log('updated record')
-        }
+async function UpdateUser(newUserData) {
+    const updateUserPromise = new Promise(async (resolve, reject) => {
+        db.update({ domain: newUserData['domain'] }, newUserData, {}, function (err, numReplaced) {
+            // This should not happen
+            if (numReplaced.length == 0) {
+                console.log('No user found for given domain name')
+                reject(null)
+            } else {
+                console.log('updated record')
+                resolve(null)
+            }
 
+        });
     });
+    await updateUserPromise;
 }
 
 async function GetUser(domainName) {
@@ -79,14 +83,19 @@ async function FindExistingUser() {
     return await findExistingUserPromise;
 }
 
-function DeleteUser(domainName) {
-    db.remove({ domain: domainName }, function (err, numRemoved) {
-        if (numRemoved == 0) {
-            console.log('unable to delete user')
-        } else {
-            console.log('delete user')
-        }
-    })
+async function DeleteUser(domainName) {
+    const deleteUserPromise = new Promise(async (resolve, reject) => {
+        db.remove({ domain: domainName }, function (err, numRemoved) {
+            if (numRemoved == 0) {
+                console.log('unable to delete user')
+                resolve()
+            } else {
+                console.log('delete user')
+                reject()
+            }
+        })
+    });
+    await deleteUserPromise;
 }
 
 module.exports = { AddUserData, GetUser, DeleteUser, UpdateUser, FindExistingUser }
