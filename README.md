@@ -3,6 +3,9 @@
 # JiraClient
 Saddened by the news that Atlassian will be deprecating support for their Jira macOS app, we decided to try to build our own! 
 
+<p align="center">
+  <img src=".github/login-jira-client.gif" />
+</p>
 
 ## Developing
 

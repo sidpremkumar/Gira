@@ -108,3 +108,6 @@ dist
 
 # Anything built
 out/*
+
+# macos 
+*.DS_Store
