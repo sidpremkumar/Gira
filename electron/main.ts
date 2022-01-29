@@ -1,10 +1,8 @@
 // Ref: https://tombuyse.blog/blog/using-electron-with-react-and-node
 
+// 3rd Party
 const electron = require('electron');
-// Module to control application life.
-const app = electron.app;
-// Module to create native browser window.
-const BrowserWindow = electron.BrowserWindow;
+import { app, BrowserWindow } from 'electron'
 
 const path = require('path');
 const url = require('url');

@@ -3,6 +3,8 @@ import { BrowserRouter } from "react-router-dom";
 import App from "./App/App";
 import reportWebVitals from "./reportWebVitals";
 
+export const SERVER_URL: string = "http://localhost:9001"
+
 ReactDOM.render(
   <BrowserRouter>
     <App />

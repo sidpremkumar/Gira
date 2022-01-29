@@ -11,9 +11,10 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "strict": true,
+    "strictNullChecks": false,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
-    "module": "esnext",
+    "module": "commonjs",
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": false,
@@ -24,5 +25,5 @@
     "src/*",
     "scripts/*",
     "electron/*"
-  ]
+, "server/Schema"  ]
 }

@@ -1,4 +1,5 @@
 /******/ (() => { // webpackBootstrap
+/******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
 /***/ "electron":
@@ -7,7 +8,6 @@
   \***************************/
 /***/ ((module) => {
 
-"use strict";
 module.exports = require("electron");
 
 /***/ }),
@@ -18,7 +18,6 @@ module.exports = require("electron");
   \***********************/
 /***/ ((module) => {
 
-"use strict";
 module.exports = require("path");
 
 /***/ }),
@@ -29,7 +28,6 @@ module.exports = require("path");
   \**********************/
 /***/ ((module) => {
 
-"use strict";
 module.exports = require("url");
 
 /***/ })
@@ -61,19 +59,61 @@ module.exports = require("url");
 /******/ 	}
 /******/ 	
 /************************************************************************/
+/******/ 	/* webpack/runtime/compat get default export */
+/******/ 	(() => {
+/******/ 		// getDefaultExport function for compatibility with non-harmony modules
+/******/ 		__webpack_require__.n = (module) => {
+/******/ 			var getter = module && module.__esModule ?
+/******/ 				() => (module['default']) :
+/******/ 				() => (module);
+/******/ 			__webpack_require__.d(getter, { a: getter });
+/******/ 			return getter;
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/define property getters */
+/******/ 	(() => {
+/******/ 		// define getter functions for harmony exports
+/******/ 		__webpack_require__.d = (exports, definition) => {
+/******/ 			for(var key in definition) {
+/******/ 				if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
+/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
+/******/ 				}
+/******/ 			}
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
+/******/ 	(() => {
+/******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/make namespace object */
+/******/ 	(() => {
+/******/ 		// define __esModule on exports
+/******/ 		__webpack_require__.r = (exports) => {
+/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 			}
+/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/************************************************************************/
 var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 (() => {
 /*!**************************!*\
   !*** ./electron/main.ts ***!
   \**************************/
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var electron__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! electron */ "electron");
+/* harmony import */ var electron__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(electron__WEBPACK_IMPORTED_MODULE_0__);
 // Ref: https://tombuyse.blog/blog/using-electron-with-react-and-node
-const electron = __webpack_require__(/*! electron */ "electron"); // Module to control application life.
+// 3rd Party
+const electron = __webpack_require__(/*! electron */ "electron");
 
 
-const app = electron.app; // Module to create native browser window.
-
-const BrowserWindow = electron.BrowserWindow;
 
 const path = __webpack_require__(/*! path */ "path");
 
@@ -86,7 +126,7 @@ let mainWindow;
 function createWindow() {
   const [width, height] = getRealScreen(); // Create the browser window.
 
-  mainWindow = new BrowserWindow({
+  mainWindow = new electron__WEBPACK_IMPORTED_MODULE_0__.BrowserWindow({
     width: width,
     height: height,
     useContentSize: true,
@@ -115,16 +155,16 @@ function createWindow() {
 // Some APIs can only be used after this event occurs.
 
 
-app.on('ready', createWindow); // Quit when all windows are closed.
+electron__WEBPACK_IMPORTED_MODULE_0__.app.on('ready', createWindow); // Quit when all windows are closed.
 
-app.on('window-all-closed', function () {
+electron__WEBPACK_IMPORTED_MODULE_0__.app.on('window-all-closed', function () {
   // On OS X it is common for applications and their menu bar
   // to stay active until the user quits explicitly with Cmd + Q
   if (process.platform !== 'darwin') {
-    app.quit();
+    electron__WEBPACK_IMPORTED_MODULE_0__.app.quit();
   }
 });
-app.on('activate', function () {
+electron__WEBPACK_IMPORTED_MODULE_0__.app.on('activate', function () {
   // On OS X it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
   if (mainWindow === null) {
