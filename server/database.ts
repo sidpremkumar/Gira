@@ -10,7 +10,7 @@ import { User } from './Schema/user.schema'
 const DATABASE_FILE_NAME: string = 'jira_client_database'
 
 // Load in our database
-var root = '.'
+var root = __dirname;
 const db = new Datastore({ filename:  path.join(root, DATABASE_FILE_NAME), autoload: true });
 
 

@@ -9,6 +9,10 @@ class App extends Component {
     super(props)
   }
 
+  /**
+   * Our function to render the page
+   * @returns Html render of the page
+   */
   render () {
     return (
       <div>

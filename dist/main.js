@@ -10,26 +10,6 @@
 
 module.exports = require("electron");
 
-/***/ }),
-
-/***/ "path":
-/*!***********************!*\
-  !*** external "path" ***!
-  \***********************/
-/***/ ((module) => {
-
-module.exports = require("path");
-
-/***/ }),
-
-/***/ "url":
-/*!**********************!*\
-  !*** external "url" ***!
-  \**********************/
-/***/ ((module) => {
-
-module.exports = require("url");
-
 /***/ })
 
 /******/ 	});
@@ -113,15 +93,13 @@ __webpack_require__.r(__webpack_exports__);
 // 3rd Party
 const electron = __webpack_require__(/*! electron */ "electron");
 
-
-
-const path = __webpack_require__(/*! path */ "path");
-
-const url = __webpack_require__(/*! url */ "url"); // Keep a global reference of the window object, if you don't, the window will
+ // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 
-
 let mainWindow;
+/**
+ * Our main createWindow function to populate our main window
+ */
 
 function createWindow() {
   const [width, height] = getRealScreen(); // Create the browser window.
@@ -150,12 +128,18 @@ function createWindow() {
     // when you should delete the corresponding element.
     mainWindow = null;
   });
-} // This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
+}
+/**
+ * This method will be called when Electron has finished
+ * initialization and is ready to create browser windows.
+ * Some APIs can only be used after this event occurs.
+ */
 
 
-electron__WEBPACK_IMPORTED_MODULE_0__.app.on('ready', createWindow); // Quit when all windows are closed.
+electron__WEBPACK_IMPORTED_MODULE_0__.app.on('ready', createWindow);
+/**
+ * Quit when all windows are closed.
+*/
 
 electron__WEBPACK_IMPORTED_MODULE_0__.app.on('window-all-closed', function () {
   // On OS X it is common for applications and their menu bar
@@ -171,6 +155,11 @@ electron__WEBPACK_IMPORTED_MODULE_0__.app.on('activate', function () {
     createWindow();
   }
 });
+/**
+ * Helper function to get the real screen size 
+ * This function will automatically detect if the main window has not yet to be defined
+ * @returns {Array} List of numbers that correspond to width,height respectively
+ */
 
 function getRealScreen() {
   // If the main window hasn't been created, determine based on the screen size

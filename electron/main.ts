@@ -4,13 +4,13 @@
 const electron = require('electron');
 import { app, BrowserWindow } from 'electron'
 
-const path = require('path');
-const url = require('url');
-
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow: any;
 
+/**
+ * Our main createWindow function to populate our main window
+ */
 function createWindow() {
     const [ width, height ] = getRealScreen()
 
@@ -44,12 +44,16 @@ function createWindow() {
     })
 }
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
+/**
+ * This method will be called when Electron has finished
+ * initialization and is ready to create browser windows.
+ * Some APIs can only be used after this event occurs.
+ */
 app.on('ready', createWindow);
 
-// Quit when all windows are closed.
+/**
+ * Quit when all windows are closed.
+*/ 
 app.on('window-all-closed', function () {
     // On OS X it is common for applications and their menu bar
     // to stay active until the user quits explicitly with Cmd + Q
@@ -66,7 +70,12 @@ app.on('activate', function () {
     }
 });
 
-function getRealScreen() {
+/**
+ * Helper function to get the real screen size 
+ * This function will automatically detect if the main window has not yet to be defined
+ * @returns {Array} List of numbers that correspond to width,height respectively
+ */
+function getRealScreen(): [number, number] {
     // If the main window hasn't been created, determine based on the screen size
     if (mainWindow == undefined) {
         // Set the height weight the monitor dimensions
