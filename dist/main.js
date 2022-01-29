@@ -84,10 +84,20 @@ const url = __webpack_require__(/*! url */ "url"); // Keep a global reference of
 let mainWindow;
 
 function createWindow() {
-  // Create the browser window.
+  const [width, height] = getRealScreen(); // Create the browser window.
+
   mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600
+    width: width,
+    height: height,
+    useContentSize: true,
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false,
+      spellcheck: true,
+      webviewTag: true,
+      scrollBounce: true
+    } // titleBarStyle : 'hidden'
+
   }); // and load the index.html of the app.
 
   mainWindow.loadURL('http://localhost:3000'); // Open the DevTools.
@@ -120,8 +130,25 @@ app.on('activate', function () {
   if (mainWindow === null) {
     createWindow();
   }
-}); // In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and require them here.
+});
+
+function getRealScreen() {
+  // If the main window hasn't been created, determine based on the screen size
+  if (mainWindow == undefined) {
+    // Set the height weight the monitor dimensions
+    const screenElectron = electron.screen;
+    const primaryDisplay = screenElectron.getPrimaryDisplay();
+    const {
+      width,
+      height
+    } = primaryDisplay.workAreaSize; // Don't return full w/h since it causes some resizing issues
+
+    return [width - 250, height - 250];
+  } else {
+    // Else just return the mainwindows size
+    return mainWindow.getSize();
+  }
+}
 })();
 
 /******/ })()
