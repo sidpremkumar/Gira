@@ -1,8 +1,11 @@
-// App.js
+// 3rd Party
 import { Component } from 'react';
-import { Routes, Route, Link } from "react-router-dom";
+import { Routes, Route } from 'react-router';
+
+// Local
 import Login from "../Login/Login";
 import Main from "../Main/Main";
+
 
 class App extends Component {
   constructor(props: any) {
@@ -15,14 +18,10 @@ class App extends Component {
    */
   render () {
     return (
-      <div>
-        <header>
-        </header>
-        <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path="/main" element={<Main />} />
-        </Routes>
-      </div>
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/main" element={<Main />} />
+      </Routes>
     );
   }
 }

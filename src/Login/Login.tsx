@@ -1,6 +1,7 @@
 // 3rd Party
 import { Component} from 'react';
 import Popup from 'reactjs-popup';
+import { useNavigate, NavigateFunction } from 'react-router';
 
 // Local
 import logo from '../logo.svg';
@@ -8,13 +9,19 @@ import './Login.css';
 import { SERVER_URL } from '..';
 import { LoginResponse, LoginRequest } from '../../server/login/login.messages'
 
+type LoginProps = {
+  navigate: NavigateFunction
+}
+
 type LoginState = { 
   domainInput: string
   errorMessage: string
   openPopup: boolean
 };
 
-class Login extends Component<{}, LoginState> {
+class Login extends Component<LoginProps, LoginState> {
+  // private 
+  
   constructor(props: any) {
     super(props)
     this.alertUser = this.alertUser.bind(this);
@@ -50,7 +57,15 @@ class Login extends Component<{}, LoginState> {
    * Login button function to be called when the login button is clicked
    */
   loginButton(): void {
+    // const navigate: NavigateFunction = useNavigate();
+    // navigate('/main')
+    this.props.navigate('/main')
     console.log(`Login submitted for domain: ${this.state.domainInput}`)
+
+    if (this.state.domainInput === '') {
+      this.alertUser('Please make sure to enter a valid for domain')
+      return
+    }
 
     // Build our request object
     const request: LoginRequest = {
@@ -78,7 +93,8 @@ class Login extends Component<{}, LoginState> {
         }
 
         // Move the user to the main screen
-        console.log("Login response", responseParsed)
+        console.log('Login succeed moving to main page');
+        componentObject.props.navigate('/main', {});
       }).catch(function(err: any) {
         console.log(`error: ${err}`);
       });
@@ -133,4 +149,9 @@ class Login extends Component<{}, LoginState> {
  
 }
 
-export default Login;
+function WithNavigation(props: any) {
+  let navigate = useNavigate();
+  return <Login {...props} navigate={navigate} />
+}
+
+export default WithNavigation;
