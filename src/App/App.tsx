@@ -41,7 +41,7 @@ class App extends Component {
         const incomingState: MainIncomingState = {
           'user': responseParsed.user
         }
-        componentObject.props.navigate('/main', incomingState);
+        componentObject.props.navigate('/main', {'state': incomingState});
       }).catch(function(err: any) {
         console.log(`error: ${err}`);
       });

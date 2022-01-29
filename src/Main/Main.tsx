@@ -5,23 +5,20 @@ import { useLocation } from 'react-router';
 // Local
 import logo from '../logo.svg';
 import './Main.css';
+import { User } from '../../server/Schema/user.schema';
 
 type MainProps = {
 }
 
 type MainState = { 
-  domainInput: string
-  errorMessage: string
-  openPopup: boolean
+  user: User
 };
 
 class Main extends Component<MainProps, MainState> {
   constructor(props: any) {
     super(props)
     this.state = {
-      domainInput: '',
-      openPopup: false,
-      errorMessage: ''
+      user: null
     };
   }
 
@@ -44,10 +41,9 @@ class Main extends Component<MainProps, MainState> {
 /**
  * Helper function to load the component with the navigate prop
  */
-function withHistory(props: any) {
-  let state = useLocation();
-  console.log(state)
-  return <Main {...props} state={state} />
+function withState(props: any) {
+  const location = useLocation();
+  return <Main {...props} data={location.state}/>
 }
 
-export default Main;
+export default withState;
