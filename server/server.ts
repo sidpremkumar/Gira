@@ -2,12 +2,14 @@ const http = require('http');
 const express = require('express');
 const cors = require('cors');
 
-const Api = express();
-const HTTP = new http.Server(Api);
+const Server = express();
+const HTTP = new http.Server(Server);
 
-Api.use(cors());
+Server.use(cors());
 
-Api.get('/test', (req: any, res: any) => res.status(200).send('success!'));
+Server.get('/test', (req: any, res: any) => {
+    res.status(200).send('success!')
+});
 
 HTTP.listen(9001, () => {
     console.log('listening on *:9001');

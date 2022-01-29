@@ -1,6 +1,9 @@
 version: 2.1
 jobs:
   build:
+    branches:
+      only:
+        - main    
     resource_class: small
     working_directory: ~/repo
     docker:
