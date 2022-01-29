@@ -23,6 +23,6 @@
   "include": [
     "src/*",
     "scripts/*",
-    "main.ts"
+    "electron/*"
   ]
 }
