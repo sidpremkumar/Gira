@@ -8,6 +8,7 @@ import logo from '../logo.svg';
 import './Login.css';
 import { SERVER_URL } from '..';
 import { LoginResponse, LoginRequest } from '../../server/login/login.messages'
+import { MainIncomingState } from '../Main/Main.types';
 
 type LoginProps = {
   navigate: NavigateFunction
@@ -20,8 +21,6 @@ type LoginState = {
 };
 
 class Login extends Component<LoginProps, LoginState> {
-  // private 
-  
   constructor(props: any) {
     super(props)
     this.alertUser = this.alertUser.bind(this);
@@ -57,9 +56,6 @@ class Login extends Component<LoginProps, LoginState> {
    * Login button function to be called when the login button is clicked
    */
   loginButton(): void {
-    // const navigate: NavigateFunction = useNavigate();
-    // navigate('/main')
-    this.props.navigate('/main')
     console.log(`Login submitted for domain: ${this.state.domainInput}`)
 
     if (this.state.domainInput === '') {
@@ -74,6 +70,7 @@ class Login extends Component<LoginProps, LoginState> {
 
     const componentObject: any = this;
 
+    // Ask our server if the login request is okay
     fetch(
       `${SERVER_URL}/login`,
       {
@@ -94,7 +91,10 @@ class Login extends Component<LoginProps, LoginState> {
 
         // Move the user to the main screen
         console.log('Login succeed moving to main page');
-        componentObject.props.navigate('/main', {});
+        const incomingState: MainIncomingState = {
+          'user': responseParsed.user
+        }
+        componentObject.props.navigate('/main', incomingState);
       }).catch(function(err: any) {
         console.log(`error: ${err}`);
       });
@@ -149,8 +149,11 @@ class Login extends Component<LoginProps, LoginState> {
  
 }
 
+/**
+ * Helper function to load the component with the navigate prop
+ */
 function WithNavigation(props: any) {
-  let navigate = useNavigate();
+  let navigate: NavigateFunction = useNavigate();
   return <Login {...props} navigate={navigate} />
 }
 

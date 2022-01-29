@@ -1,3 +1,5 @@
+// Local
+import { handleCheckLogin } from "./checklogin/checklogin";
 import { handleLogin } from "./login/login";
 
 const http = require('http');
@@ -13,6 +15,10 @@ Server.use(bodyParser.json());
 
 Server.post('/login', async (req: any, res: any) => {
     handleLogin(req, res);
+});
+
+Server.post('/check-login', async (req: any, res: any) => {
+    handleCheckLogin(req, res);
 });
 
 HTTP.listen(9001, () => {
