@@ -42,7 +42,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "server-build": "babel server --out-dir build-server",
-    "server-start": "nodemon --watch server --exec \"ts-node server/server.ts\""
+    "server-start": "nodemon --watch 'server/**' --ext 'ts,json' --exec \"ts-node server/server.ts\""
   },
   "eslintConfig": {
     "extends": [
