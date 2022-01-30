@@ -4,7 +4,6 @@ import Popup from 'reactjs-popup';
 import { useNavigate, NavigateFunction } from 'react-router';
 
 // Local
-import logo from '../logo.svg';
 import './Login.css';
 import { SERVER_URL } from '..';
 import { LoginResponse, LoginRequest } from '../../server/login/login.messages'
@@ -117,8 +116,6 @@ class Login extends Component<LoginProps, LoginState> {
   render() {
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
           <h1>Welcome</h1>
             <h3>Enter your Jira domain name: </h3>
             <input type="text" value={this.state.domainInput} onChange={evt => this.updateDomainInput(evt)} placeholder="https://test.atlassian.net/"/>
@@ -142,7 +139,6 @@ class Login extends Component<LoginProps, LoginState> {
                 </div>
               )}
             </Popup>
-        </header>
       </div>
     );
   }

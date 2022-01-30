@@ -3,23 +3,21 @@ import { Component} from 'react';
 import { useLocation } from 'react-router';
 
 // Local
-import './Main.css';
-import { User } from '../../server/Schema/user.schema';
-import Tabs from './Tabs/Tabs'
-import Sidebar from './Sidebar/Sidebar'
+import './Tabs.css';
+import { User } from '../../../server/Schema/user.schema';
 
-type MainProps = {
+type TabProps = {
   // This is the data passed via navigation
   data :{
     user: User
   }
 }
 
-type MainState = { 
+type TabState = { 
 
 };
 
-class Main extends Component<MainProps, MainState> {
+class Tabs extends Component<TabProps, TabState> {
   private user: User; 
   constructor(props: any) {
     super(props)
@@ -32,9 +30,9 @@ class Main extends Component<MainProps, MainState> {
    */
   render() {
     return (
-      <div className="row">
-        <Sidebar />
-        <Tabs />
+      <div className="App">
+          <h1>Tabs</h1>
+          {/* <iframe src="https://commonwealthcrypto.atlassian.net" title="description"></iframe> */}
       </div>
     );
   }
@@ -45,7 +43,7 @@ class Main extends Component<MainProps, MainState> {
  */
 function WithState(props: any) {
   const location = useLocation();
-  return <Main {...props} data={location.state}/>
+  return <Tabs {...props} data={location.state}/>
 }
 
 export default WithState;

@@ -10,8 +10,8 @@ import { SERVER_URL } from '..';
 import { LoginResponse } from '../../server/login/login.messages';
 import { MainIncomingState } from '../Main/Main.types';
 
-
-
+// Ref: https://github.com/oldboyxx/jira_clone/blob/190dfcd9dc62189a2852acf8e9e7869178a8008c/client/src/App/index.jsx#L8
+import './fontStyles.css';
 class App extends Component {
   constructor(props: any) {
     super(props)
