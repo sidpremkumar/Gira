@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { StyledIcon } from './Icon.scripts';
 
 const fontIconCodes = {
+  [`github`]: `github`,
   [`bug`]: '\\e90f',
   [`stopwatch`]: '\\e914',
   [`task`]: '\\e910',

@@ -38,16 +38,17 @@ class Sidebar extends Component<SideProps, SideState> {
         <StyledLogo />
       </LogoLink>
   
-      {/* <Item onClick={issueSearchModalOpen}>
-        <Icon type="search" size={22} top={1} left={3} />
-        <ItemText>Search issues</ItemText>
+      <Item >
+        <Icon type="board" size={22} top={1} left={3} />
+        <ItemText>Jira</ItemText>
       </Item>
-  
-      <Item onClick={issueCreateModalOpen}>
-        <Icon type="plus" size={27} />
-        <ItemText>Create Issue</ItemText>
-      </Item> */}
-  
+      
+      {/* <Item onClick={issueCreateModalOpen}> */}
+      <Item>
+        <Icon type="github" size={27} />
+        <ItemText>Github</ItemText>
+      </Item>
+
       <Bottom>
         <AboutTooltip
           placement="right"

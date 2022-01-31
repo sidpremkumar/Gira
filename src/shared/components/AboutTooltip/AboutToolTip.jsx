@@ -24,12 +24,12 @@ const AboutTooltip = tooltipProps => (
         </FeedbackParagraph>
 
         <div className='tooltip_btn'>
-          <a href="https://sidpremkumar.com/" target="_blank" rel="noreferrer noopener" style={{ 'text-decoration': 'none'}}>
-            <Button style={{ 'border-style': 'none', 'margin-right': 5 }} variant="primary">Visit Website</Button>
+          <a href="https://sidpremkumar.com/" target="_blank" rel="noreferrer noopener" className='hyperlink'>
+            <Button className='flatButtons' variant="primary">Visit Website</Button>
           </a>
 
-          <a href="https://github.com/sidpremkumar/gira" target="_blank" rel="noreferrer noopener" style={{ 'text-decoration': 'none'}}>
-            <Button style={{ 'border-style': 'none' }} icon="github">
+          <a href="https://github.com/sidpremkumar/gira" target="_blank" rel="noreferrer noopener" className='hyperlink'>
+            <Button className='flatButtons' icon="github">
               Github Repo
             </Button>
           </a>
