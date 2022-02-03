@@ -41,7 +41,7 @@ class App extends Component {
         const incomingState: MainIncomingState = {
           'user': responseParsed.user
         }
-        componentObject.props.navigate('/main', {'state': incomingState});
+        componentObject.props.navigate('/main/github/*', {'state': incomingState});
       }).catch(function(err: any) {
         console.log(`error: ${err}`);
       });
@@ -55,7 +55,8 @@ class App extends Component {
     return (
       <Routes>
         <Route path="/" element={<Login />} />
-        <Route path="/main" element={<Main />} />
+        {/* TODO: Save the previous pages state */}
+        <Route path='/main/github/*' element={<Main />} />
       </Routes>
     );
   }

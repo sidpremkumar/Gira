@@ -1,12 +1,13 @@
 // 3rd Party
 import { Component} from 'react';
-import { useLocation } from 'react-router';
+import { Route, Routes, useLocation } from 'react-router';
 
 // Local
-import './Main.css';
+import './Main.scripts.tsx';
 import { User } from '../../server/Schema/user.schema';
-import Tabs from './Tabs/Tabs'
+import GithubSidebar from './Github/GithubSidebar/GithubSidebar'
 import Sidebar from './Sidebar/Sidebar'
+import { ProjectPage } from './Main.scripts'
 
 type MainProps = {
   // This is the data passed via navigation
@@ -32,10 +33,22 @@ class Main extends Component<MainProps, MainState> {
    */
   render() {
     return (
-      <div className="row">
+      <ProjectPage>
         <Sidebar />
-        <Tabs />
-      </div>
+        {/* Depending on what page we are on, we need to open different pages
+        <Routes>
+          <Route
+          path='/main/github/*'
+          element = {
+            
+          }/>
+        </Routes> */}
+        <GithubSidebar
+              // project={project}
+              // fetchProject={fetchProject}
+              // updateLocalProjectIssues={updateLocalProjectIssues}
+          />
+      </ProjectPage>
     );
   }
 }
