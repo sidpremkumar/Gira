@@ -5,6 +5,8 @@ import { NavLink } from 'react-router-dom';
 
 // Local
 import { User } from '../../../../server/Schema/user.schema';
+import Icon from '../../../shared/components/Icon/Icon';
+import ProjectAvatar from '../../../shared/components/ProjectAvatar/ProjectAvatart'
 import { 
   Sidebar,
   ProjectInfo,
@@ -14,9 +16,9 @@ import {
   Divider, 
   LinkItem,
   LinkText,
-  NotImplemented
+  NotImplemented,
+  IconDiv
 } from './GithubSidebar.scripts'
-import Icon from '../../../shared/components/Icon/Icon';
 
 type GithubSidebarProps = {
   // This is the data passed via navigation
@@ -62,11 +64,15 @@ class GithubSidebar extends Component<GithubSidebarProps, GithubSidebarState> {
     return (
       <Sidebar>
         <ProjectInfo>
-          {/* <ProjectAvatar /> */}
+          <ProjectAvatar />
           <ProjectTexts>
-            <ProjectName>Project name</ProjectName>
-            <ProjectCategory>Some catagory</ProjectCategory>
+            <ProjectName>webshell-backend</ProjectName>
+            <ProjectCategory>Bastionzero</ProjectCategory>
           </ProjectTexts>
+          
+          <IconDiv>
+            <Icon type="arrow-right" size={20} />
+          </IconDiv>
         </ProjectInfo>
   
         {/* {this.renderLinkItem(match, 'Kanban Board', 'board', '/board')} */}

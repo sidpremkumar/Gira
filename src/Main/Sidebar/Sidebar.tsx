@@ -3,7 +3,6 @@ import { Component} from 'react';
 import { useLocation } from 'react-router';
 
 // Local
-import './Sidebar.css';
 import { User } from '../../../server/Schema/user.schema';
 import { NavLeft, LogoLink, StyledLogo, Bottom, Item, ItemText } from './Sidebar.scripts';
 import AboutTooltip from '../../shared/components/AboutTooltip/AboutToolTip'

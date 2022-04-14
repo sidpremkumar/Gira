@@ -41,6 +41,7 @@ export const ProjectName = styled.div`
 export const ProjectCategory = styled.div`
   color: ${color.textMedium};
   ${font.size(13)};
+  font-family: CircularStdBook;
 `;
 
 export const Divider = styled.div`
@@ -93,3 +94,10 @@ export const NotImplemented = styled.div`
     opacity: 1;
   }
 `;
+
+export const IconDiv = styled.div`
+  width: 50px
+  align-items: center;
+
+  }
+`
